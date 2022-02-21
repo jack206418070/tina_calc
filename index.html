@@ -12,9 +12,17 @@
             box-sizing: border-box;
         }
         .container{
-            max-width: 1200px;
+            width: 1200px;
             margin: 0 auto;
             padding: 100px 80px;
+            overflow: hidden;
+        }
+        .content{
+            height: 290px;
+            position: relative;
+            width: 50%;
+            margin: 0 auto;
+            perspective:1000px;
         }
         h1{
             text-align: center;
@@ -22,13 +30,29 @@
             font-weight: bold;
         }
         form{
-            margin: 0 auto;
-            width: 50%;
-            padding: 20px 0;
+            position: relative;
+            width: 100%;
+            height: 100%;
             background-color: pink;
             border-radius: 4px;
             box-shadow: 2px 3px 3px #ccc;
+            transform-style: preserve-3d;
+            transition: 1s;
         }
+        .front{
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            transform: translateZ(25px);
+        }
+        .back{
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            transform: translateZ(-25px) rotateY(180deg);
+        }
+
+
         label{
             margin-right: 5px;
             flex: 0 0 15%;
@@ -76,31 +100,68 @@
             display: flex;
             justify-content: space-between;
         }
+        .left-side, .right-side{
+            width: 50px;
+            height: 100%;
+            background: white;
+            transform: rotateY(90deg);
+            position: absolute;
+            top: 0;
+            left: -25px;
+        }
+        .right-side{
+            transform: rotateY(-90deg);
+            left: auto;
+            right: -25px;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <div class="container">
             <h1>Tina"s Calc</h1>
-
             <div class="content">
                 <form action="#">
-                    <div class="form-control">
-                        <label for="origin">成本金額:</label>
-                        <input type="number" v-model="origin">
+                    <div class="front">
+                        <div class="form-control">
+                            <label for="origin">成本金額:</label>
+                            <input type="number" v-model="origin">
+                        </div>
+                        <div class="form-control">
+                            <label for="discount">調整數:</label>
+                            <input type="number" v-model="discount">
+                        </div>
+                        <div class="form-control">
+                            <label for="reslut">費用:</label>
+                            <input type="number" v-model="reslut" disabled>
+                        </div>
+                        <div class="btn-group">
+                            <a href="#" @click.prevent="clean">清除價格</a>
+                            <a href="#" @click.prevent="rotate">切換成本</a>
+                            <a href="#" @click.prevent="calc">計算最終</a>
+                        </div>
                     </div>
-                    <div class="form-control">
-                        <label for="discount">調整數:</label>
-                        <input type="number" v-model="discount">
+                    <div class="back">
+                        <div class="form-control">
+                            <label for="origin">最終金額:</label>
+                            <input type="number" v-model="sec_origin">
+                        </div>
+                        <div class="form-control">
+                            <label for="discount">調整數:</label>
+                            <input type="number" v-model="sec_discount">
+                        </div>
+                        <div class="form-control">
+                            <label for="reslut">回推成本:</label>
+                            <input type="number" v-model="sec_reslut" disabled>
+                        </div>
+                        <div class="btn-group">
+                            <a href="#" @click.prevent="sec_clean">清除價格</a>
+                            <a href="#" @click.prevent="rotate">切換最終</a>
+                            <a href="#" @click.prevent="sec_calc">計算成本</a>
+                        </div>
                     </div>
-                    <div class="form-control">
-                        <label for="reslut">費用:</label>
-                        <input type="number" v-model="reslut" disabled>
-                    </div>
-                    <div class="btn-group">
-                        <a href="#" @click.prevent="clean">清除價格</a>
-                        <a href="#" @click.prevent="calc">開始計算</a>
-                    </div>
+                    <div class="left-side"></div>
+                    <div class="right-side"></div>
                 </form>
             </div>
         </div>
@@ -116,7 +177,11 @@
                 return{
                     origin:'',
                     discount: '',
-                    reslut: ''
+                    reslut: '',
+                    is_rotate: false,
+                    sec_origin: '',
+                    sec_discount: '',
+                    sec_reslut: ''
                 }
             },
             methods:{
@@ -127,6 +192,24 @@
                     this.reslut = '';
                     this.origin = '';
                     this.discount = '';
+                },
+                rotate(){
+                    if(this.is_rotate){
+                        document.querySelector('form').style.transform = 'rotateY(0deg)';
+                        this.is_rotate = !this.is_rotate;
+                    }else{
+                        document.querySelector('form').style.transform = 'rotateY(180deg)';
+                        this.is_rotate = !this.is_rotate;
+                    }
+                },
+                sec_calc(){
+                    console.log(this.sec_discount)
+                    this.sec_reslut =  (this.sec_origin / (100 + this.sec_discount)) * 100;
+                },
+                sec_clean(){
+                    this.sec_origin = '';
+                    this.sec_discount = '';
+                    this.sec_reslut = '';
                 }
             }
         });
