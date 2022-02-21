@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container{
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 80px;
+        }
+        h1{
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+        }
+        form{
+            margin: 0 auto;
+            width: 50%;
+            padding: 20px 0;
+            background-color: pink;
+            border-radius: 4px;
+            box-shadow: 2px 3px 3px #ccc;
+        }
+        label{
+            margin-right: 5px;
+            flex: 0 0 15%;
+        }
+        input{
+            flex: 0 0 65%;
+            padding: 5px 10px;
+            font-size: 24px;
+            outline: none;
+            border: none;
+            transition: 0.7s;
+            outline: 1px solid #ccc;
+        }
+        input:focus{
+            outline: 3px solid #ccc;
+        }
+        .btn-group{
+            padding: 10px 50px;
+        }
+        a{
+            text-decoration: none;
+            display: block;
+            color: black;
+            background-color: white;
+            width: 30%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            border-radius: 4px;
+            padding: 4px 0;
+            opacity: 1;
+            transition: 0.7s;
+        }
+        a:hover{
+            background-color: #555;
+            color: white;
+        }
+        .form-control{
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            align-items: center;
+        }
+        .btn-group{
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <h1>Tina"s Calc</h1>
+
+            <div class="content">
+                <form action="#">
+                    <div class="form-control">
+                        <label for="origin">成本金額:</label>
+                        <input type="number" v-model="origin">
+                    </div>
+                    <div class="form-control">
+                        <label for="discount">調整數:</label>
+                        <input type="number" v-model="discount">
+                    </div>
+                    <div class="form-control">
+                        <label for="reslut">費用:</label>
+                        <input type="number" v-model="reslut" disabled>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" @click.prevent="clean">清除價格</a>
+                        <a href="#" @click.prevent="calc">開始計算</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+        const app = Vue.createApp({
+            data(){
+                return{
+                    origin:'',
+                    discount: '',
+                    reslut: ''
+                }
+            },
+            methods:{
+                calc(){
+                    this.reslut = this.origin + this.origin * this.discount * 0.01;
+                },
+                clean(){
+                    this.reslut = '';
+                    this.origin = '';
+                    this.discount = '';
+                }
+            }
+        });
+        app.mount('#app')
+    </script>
+</body>
+</html>
